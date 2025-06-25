@@ -2,7 +2,8 @@ const cartBtn = document.getElementById('cart-btn')
 const cartPanel = document.getElementById('cart-panel')
 const contenedorProducto = document.getElementById("contenedor-productos")
 const cartItems = document.getElementById("cart-items")
-const Carrito = JSON.parse(localStorage.getItem('carrito')) || []
+let Carrito = JSON.parse(localStorage.getItem('carrito')) || []
+const total = document.getElementById('total')
 
 let dejoAbiertoCarrito = JSON.parse(localStorage.getItem("carrito_open")) || false
 if(dejoAbiertoCarrito){
@@ -64,14 +65,20 @@ function run (){
 }
 
  function agregarCarrito(producto){
-    Carrito.push(producto.id)
+    Carrito.push(producto)
     localStorage.setItem("carrito", JSON.stringify(Carrito))
  }
 
-function buscadoraPorId(id){
- let producto = products.find(el => el.id == id)
+function calculadoraTotal(){
+    return Carrito.reduce((acc, el) =>{
+         return (acc += Number(el.price))
+    },0)
+}
 
- return producto
+function buscadoraPorId(id){
+    let producto = products.find((el) => el.id == id.slice(0, -1))
+
+    return producto
 }
 
 function dadoraDeEventosAgregar(){
@@ -93,7 +100,7 @@ function renderizarCards(){
     products.forEach(el => {
         let producto = ` 
         <div class="product-container">
-        <div class="product-card" id=${el.id}>
+        <div class="product-card" id=${el.id + 'V'}>
             <div class="product-image">
             <img src=${el.image} alt=${el.alt}>
             </div>
@@ -108,16 +115,19 @@ function renderizarCards(){
     });
 }
 
-function mostradoraDeCarrito(){
-     cartItems.innerHTML = "";
+function mostradoraDeCarrito() {
+    cartItems.innerHTML = '' 
+
     Carrito.forEach((el) => {
-         let producto = `
-        <div class="product-card">
+        let producto = `
+        <div class="product-card" id=${el.id + 'C'}
             <h3>${el.title}</h3>
             <p class="price">$${el.price}</p>
-        </div>`
-        cartItems.innerHTML += producto
-    })
-}
+            </div>`
+            cartItems.innerHTML += producto
+        })
+        total.innerHTML =''
+        total.innerHTML = calculadoraTotal()
 
+    }
 run()

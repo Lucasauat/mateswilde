@@ -9,7 +9,7 @@ body {
   background: linear-gradient(to right, #CF7223, #7D9040);
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 }
-h1{
+header{
     text-align: center;
     color: white;
     padding-top: 50px;
