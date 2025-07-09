@@ -13,6 +13,7 @@ header{
     text-align: center;
     color: white;
     padding-top: 50px;
+    font-family: 'Segoe UI', sans-serif;
 }
 .simple-navbar {
   width: 100%;
@@ -110,6 +111,7 @@ aside {
   width: 300px;
   font-family: 'Segoe UI', sans-serif;
   color: #333;
+  overflow: scroll;
 }
 
 .cart-panel{
@@ -123,12 +125,74 @@ aside {
     transition: right 0.3s ease-in-out;
     padding: 1rem;
     z-index: 999;
+    margin: 5px;
+    text-align: center;
 }
+.cart-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.cart-item img {
+    width: 80px;
+    height: auto;
+    border-radius: 8px;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.cart-item .item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .cart-panel.active{
     right: 0;
 }
 .cart-panel h2{
     margin-bottom: 1rem;
+}
+#total {
+    
+    font-size: 1.4rem;
+    font-weight: bold;
+    background-color: #f1f1f1;
+    padding: 12px 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.cart-panel button {
+    display: inline-block;
+    background-color: #CF7223; 
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 8px;
+    margin-top: 12px;
+    margin-right: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.cart-panel button:hover {
+    background-color: #8b4513; 
+}
+
+
+#clear-cart-btn {
+    background-color: #cc0000;
+}
+
+#clear-cart-btn:hover {
+    background-color: #a00000;
 }
 
 .cart-btn {
@@ -150,4 +214,11 @@ aside {
 .cart-btn:hover {
   background-color: #a95217;
   transform: scale(1.05);
+}
+.input-cantidad {
+    width: 60px;
+    padding: 4px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }

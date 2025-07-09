@@ -17,7 +17,7 @@ const products = [
         id:'1',
         title: 'Mate Imperial Rojo',
         description: 'Muy buen mate de gran porte',
-        price: '10.000',
+        price: '10000',
         image: 'img/mate-imperial-r.jpeg',
         alt: 'Mate Imperial rojo con bisel cromado'
     },
@@ -25,7 +25,7 @@ const products = [
         id:'2',
         title: 'Mate Camionero Negro',
         description: 'Mate funcional que te acompaña',
-        price: '7.000',
+        price: '7000',
         image: 'img/mate-camio.jpeg',
         alt: 'mate camionero de color negro'
     },
@@ -33,7 +33,7 @@ const products = [
         id:'3',
         title: 'Mate Torpedo',
         description: 'Mate sutil pero con onda',
-        price: '4.500',
+        price: '4500',
         image: 'img/mate-torpedo.jpeg',
         alt: 'mate torpedo color negro o rojo'
     },
@@ -41,7 +41,7 @@ const products = [
         id:'4',
         title: 'Yerba Canarias',
         description: 'Buena Yerba uruguaya',
-        price: '5.000',
+        price: '5000',
         image: 'img/canarias.jpeg',
         alt: 'yerba canarias tradicional o serena'
     },
@@ -62,21 +62,32 @@ function run (){
     mostradoraDeCarrito()
     renderizarCards()
     dadoraDeEventosAgregar()
+    limpiarCarrito()
+    finalizarCompra()
 }
-
- function agregarCarrito(producto){
-    Carrito.push(producto)
+function alertOK(){
+    Swal.fire({
+    title: "Agregado",
+    text: "Producto Agregado!.",
+    icon: "success",
+    toast: true,
+                })
+}
+function agregarCarrito(producto){
+    
+    Carrito.push({...producto,quantity:1})
     localStorage.setItem("carrito", JSON.stringify(Carrito))
+    mostradoraDeCarrito();
  }
 
 function calculadoraTotal(){
     return Carrito.reduce((acc, el) =>{
-         return (acc += Number(el.price))
+         return (acc += Number(el.price * el.quantity))
     },0)
 }
 
 function buscadoraPorId(id){
-    let producto = products.find((el) => el.id == id.slice(0, -1))
+    let producto = products.find((el) => el.id == id)
 
     return producto
 }
@@ -89,9 +100,23 @@ function dadoraDeEventosAgregar(){
         el.addEventListener("click", (e) =>{
             let id = e.target.parentNode.id
             let producto = buscadoraPorId(id)
-            agregarCarrito(producto)
+            
+            if(Carrito.length == 0){
+                agregarCarrito(producto)
+            }else{
+                let existe = false;
+                Carrito.forEach ((item) => {
+                if (item.id == producto.id ){
+                    item.quantity++
+                    existe = true;
+                }
+                })
+                if(!existe){
+                    agregarCarrito(producto)
+                }
+            }
             mostradoraDeCarrito()
-            console.log(Carrito)
+            alertOK()
         })
     })
 }
@@ -100,7 +125,7 @@ function renderizarCards(){
     products.forEach(el => {
         let producto = ` 
         <div class="product-container">
-        <div class="product-card" id=${el.id + 'V'}>
+        <div class="product-card" id=${el.id}>
             <div class="product-image">
             <img src=${el.image} alt=${el.alt}>
             </div>
@@ -115,19 +140,109 @@ function renderizarCards(){
     });
 }
 
-function mostradoraDeCarrito() {
+function mostradoraDeCarrito() { 
     cartItems.innerHTML = '' 
 
-    Carrito.forEach((el) => {
+    Carrito.forEach((el, index) => {
         let producto = `
-        <div class="product-card" id=${el.id + 'C'}
-            <h3>${el.title}</h3>
-            <p class="price">$${el.price}</p>
-            </div>`
-            cartItems.innerHTML += producto
-        })
-        total.innerHTML =''
-        total.innerHTML = calculadoraTotal()
+        <div class="cart-item" id="${el.id}C">
+            <img src="${el.image}" alt="${el.alt}">
+            <div class="item-info">
+                <h4>${el.title}</h4>
+                <p style="color: green;">$${Number(el.price)}</p>
+                <label for="cantidad-${el.id}">Cantidad:</label>
+                <input type="number" id="cantidad-${el.id}" class="input-cantidad" min="1" value="${el.quantity}" data-index="${index}">
+            </div>
+        </div>`
+        cartItems.innerHTML += producto
+    })
 
+    total.innerHTML = `$${calculadoraTotal()}`
+
+    
+    const inputs = document.querySelectorAll(".input-cantidad")
+    inputs.forEach(input => {
+        input.addEventListener("change", (e) => {
+            const index = e.target.dataset.index
+            let nuevaCantidad = parseInt(e.target.value)
+
+            if (isNaN(nuevaCantidad) || nuevaCantidad < 1) {
+                nuevaCantidad = 1
+                e.target.value = 1
+            }
+
+            Carrito[index].quantity = nuevaCantidad
+            localStorage.setItem("carrito", JSON.stringify(Carrito))
+            total.innerHTML = `$${calculadoraTotal()}`
+        })
+    })
+}
+function alertLimpiarCarrito(){
+        Swal.fire({
+    title: "Queres limpiar carrito?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+     cancelButtonText: "Cancelar",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Si, Borrar!!"
+    }).then((result) => {
+    if (result.isConfirmed) {
+         cartItems.innerHTML = '' 
+            Carrito= [];
+            localStorage.removeItem('carrito');
+            total.innerHTML= '';
+        Swal.fire({
+        title: "Borrado!",
+        text: "Carrito limpiado correctamente.",
+        icon: "success"
+        });
     }
+    });
+}
+function limpiarCarrito(){
+     const clearBtn = document.getElementById("clear-cart")
+     clearBtn.addEventListener('click', (e) => {
+        
+        if(Carrito.length > 0){
+            alertLimpiarCarrito();
+        }
+     })
+}
+function alertFinalizarCompra(){
+        Swal.fire({
+    title: "Queres finalizar la compra?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+     cancelButtonText: "Cancelar",
+    confirmButtonText: "Si!"
+    }).then((result) => {
+    if (result.isConfirmed) {
+        let mensaje = "¡Hola! Quiero hacer un pedido desde *MatesWilde*\n"
+    
+        Carrito.forEach(el => {
+            mensaje += `• ${el.title} (x${el.quantity}) - $${(el.price * el.quantity)}\n`
+        })
+
+        mensaje += `Total: $${calculadoraTotal()}`
+
+        const url = `https://wa.me/5491153125860?text=${encodeURI(mensaje)}`
+
+        window.open(url, '_blank')
+        Swal.fire({
+        title: "Finalizada!",
+        text: "Compra finalizada correctamente.",
+        icon: "success"
+        });
+    }
+    });
+}
+function finalizarCompra(){
+    const btnFinalizar = document.getElementById('finalizar-btn')
+    btnFinalizar.addEventListener('click', (e)=> {
+        alertFinalizarCompra()
+    })
+}
 run()
