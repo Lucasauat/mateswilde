@@ -9,7 +9,7 @@ body {
   background: linear-gradient(to right, #CF7223, #7D9040);
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 }
-header{
+.header{
     text-align: center;
     color: white;
     padding-top: 50px;
@@ -222,3 +222,32 @@ aside {
     border-radius: 6px;
     border: 1px solid #ccc;
 }
+.footer {
+  background-color: #222;
+  color: #eee;
+  padding: 20px 0;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer .social-icons {
+  margin-top: 10px;
+}
+
+.footer .social-icons a {
+  color: #eee;
+  margin: 0 10px;
+  font-size: 24px;
+  transition: color 0.3s;
+}
+
+.footer .social-icons a:hover {
+  color: #25D366; /* color verde de WhatsApp */
+}
+

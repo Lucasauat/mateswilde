@@ -70,6 +70,8 @@ function alertOK(){
     title: "Agregado",
     text: "Producto Agregado!.",
     icon: "success",
+    showConfirmButton: false,
+    timer: 1000,
     toast: true,
                 })
 }
@@ -185,13 +187,13 @@ function alertLimpiarCarrito(){
     confirmButtonColor: "#3085d6",
      cancelButtonText: "Cancelar",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Si, Borrar!!"
+    confirmButtonText: "Si, Borrar"
     }).then((result) => {
     if (result.isConfirmed) {
          cartItems.innerHTML = '' 
             Carrito= [];
             localStorage.removeItem('carrito');
-            total.innerHTML= '';
+            total.innerHTML= '$0';
         Swal.fire({
         title: "Borrado!",
         text: "Carrito limpiado correctamente.",
